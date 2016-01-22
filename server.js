@@ -1,6 +1,5 @@
 var express = require('express');
 var app = express();
-var morgan = require('morgan');
 
 var config = require('./server/config.js');
 
@@ -8,7 +7,7 @@ var config = require('./server/config.js');
 var port = process.env.PORT || config.defaultPort;
 
 // Add middleware
-app.use(morgan('dev'));
+require('./server/middleware.js')(app);
 
 // Simple Routing
 app.get('/', (req, res) => {
