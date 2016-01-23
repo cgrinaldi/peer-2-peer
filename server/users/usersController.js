@@ -10,19 +10,19 @@ module.exports = {
   },
 
   signup (req, res, next) {
-    var username = req.body.username;
+    var email = req.body.email;
     var password = req.body.password;
-    User.findOne({username}, (err, data) => {
-      // If username is taken...
+    User.findOne({email}, (err, data) => {
+      // If email is taken...
       if (data) {
-        console.log('User unavailable:', username);
+        console.log('User unavailable:', email);
         return next('Username unavailable');
       } else {
         // Otherwise, create new user
-        var newUser = {username, password};
+        var newUser = {email, password};
         User.create(newUser, (err, data) => {
           if (err) {
-            console.log('Failed to sign up:', username);
+            console.log('Failed to sign up:', email);
             return next('Error');
           } else {
             res.send('User successfully created!');
@@ -33,9 +33,11 @@ module.exports = {
   },
 
   signin (req, res, next) {
-    var username = req.body.username;
+    var email = req.body.email;
     var password = req.body.password;
-    User.findOne({username}, (err, user) => {
+    console.log('request is', req.body);
+    User.findOne({email}, (err, user) => {
+      console.log('user is', user);
       if (!user) {
         res.json({success: false, message: 'Username or password is incorrect'});
       } else {
@@ -44,7 +46,7 @@ module.exports = {
             var token = jwt.sign(user, config.secret, {
               expiresIn: 1 * 60 * 60
             });
-            res.json({success: true, user, token});
+            res.json({success: true, token});
           } else {
             res.json({success: false, message: 'Username or password is incorrect'});
           }
