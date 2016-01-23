@@ -1,5 +1,6 @@
 import axios from 'axios';
-import {LOGIN_USER_REQUEST} from '../constants';
+import {routeActions} from 'redux-simple-router';
+import {LOGIN_USER_REQUEST, LOGIN_USER_SUCCESS} from '../constants';
 
 export function loginUser (email, password) {
   return (dispatch) => {
@@ -8,7 +9,7 @@ export function loginUser (email, password) {
       .then((resp) => {
         var data = resp.data;
         dispatch(loginUserSuccess(data.token));
-        dispatch(pushState(null, '/dashboard'));
+        dispatch(routeActions.push('/dashboard'));
       });
   }
 };

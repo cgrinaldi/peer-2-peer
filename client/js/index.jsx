@@ -1,6 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import {Router, Route} from 'react-router';
+import {Router, Route, browserHistory} from 'react-router';
 import {Provider} from 'react-redux';
 import configureStore from './store/configureStore.js';
 
@@ -10,9 +10,10 @@ import Transactions from './components/Transactions.jsx';
 
 const store = configureStore();
 
+
 ReactDOM.render(
   <Provider store={store}>
-    <Router>
+    <Router history={browserHistory}>
       <Route path="/" component={App}>
         <Route path="/dashboard" component={Dashboard} />
         <Route path="/transactions" component={Transactions} />
