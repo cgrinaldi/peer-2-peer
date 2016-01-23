@@ -1,6 +1,7 @@
 import React from 'react';
 
 import Navigation from '../components/Navigation.jsx';
+import Login from '../components/Login.jsx';
 
 const App = React.createClass({
   render () {
@@ -8,10 +9,14 @@ const App = React.createClass({
       <div>
         <Navigation />
         <div className="container">
-          {this.props.children}
+          {this.getContent()}
         </div>
       </div>
     );
+  },
+
+  getContent () {
+    return this.props.children || <Login />
   }
 });
 
