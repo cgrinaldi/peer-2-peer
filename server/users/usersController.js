@@ -39,7 +39,7 @@ module.exports = {
     User.findOne({email}, (err, user) => {
       console.log('user is', user);
       if (!user) {
-        res.json({success: false, message: 'Username or password is incorrect'});
+        res.sendStatus(403);
       } else {
         user.comparePasswords(password, (isMatch) => {
           if (isMatch) {
@@ -48,7 +48,7 @@ module.exports = {
             });
             res.json({success: true, token});
           } else {
-            res.json({success: false, message: 'Username or password is incorrect'});
+            res.sendStatus(403);
           }
         });
       }
