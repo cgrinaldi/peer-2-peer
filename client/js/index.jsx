@@ -1,22 +1,24 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import {Router, Route, browserHistory} from 'react-router';
+import {Router, Route, IndexRoute, browserHistory} from 'react-router';
 import {Provider} from 'react-redux';
 import configureStore from './store/configureStore.js';
+import {requireAuthentication} from './components/AuthenticatedComponent.jsx';
 
 import App from './containers/App.jsx';
+import Login from './components/Login.jsx';
 import Dashboard from './components/Dashboard.jsx';
 import Transactions from './components/Transactions.jsx';
 
 const store = configureStore();
 
-
 ReactDOM.render(
   <Provider store={store}>
     <Router history={browserHistory}>
       <Route path="/" component={App}>
-        <Route path="/dashboard" component={Dashboard} />
-        <Route path="/transactions" component={Transactions} />
+        <Route path="/login" component={Login} />
+        <Route path="/dashboard" component={requireAuthentication(Dashboard)} />
+        <Route path="/transactions" component={requireAuthentication(Transactions)} />
       </Route>
     </Router>
   </Provider>,

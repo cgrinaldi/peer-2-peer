@@ -1,4 +1,4 @@
-import {LOGIN_USER_REQUEST, LOGIN_USER_FAILURE} from '../constants';
+import {LOGIN_USER_REQUEST, LOGIN_USER_FAILURE, LOGIN_USER_SUCCESS} from '../constants';
 
 const initialState = {
   token: null,
@@ -15,6 +15,14 @@ export default function auth (state = initialState, action) {
     return {
       isAuthenticating: true,
       statusText: null
+    };
+
+  case LOGIN_USER_SUCCESS:
+    return {
+      isAuthenticating: false,
+      isAuthenticated: true,
+      token: payload.token,
+      email: payload.email
     };
 
   case LOGIN_USER_FAILURE:

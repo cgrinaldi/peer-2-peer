@@ -8,7 +8,8 @@ export function loginUser (email, password) {
     axios.post('/users/signin', {email, password})
       .then((resp) => {
         var data = resp.data;
-        dispatch(loginUserSuccess(data.token));
+        console.log('data is', data);
+        dispatch(loginUserSuccess(email, data.token));
         dispatch(routeActions.push('/dashboard'));
       })
       // If user is unsuccessful in signing in, issue failure action
@@ -22,14 +23,12 @@ export function loginUserRequest () {
   }
 };
 
-export function loginUserSuccess(token) {
+export function loginUserSuccess(email, token) {
   localStorage.setItem('token', token);
   return {
     type: LOGIN_USER_SUCCESS,
-    payload: {
-      token
-    }
-  }
+    payload: {email, token}
+  };
 }
 
 export function loginUserFailure() {
