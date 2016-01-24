@@ -5,7 +5,7 @@ import {Link} from 'react-router';
 import * as actionCreators from '../actions';
 import '../../styles/Login.scss';
 
-const Login = React.createClass({
+const Signup = React.createClass({
   getInitialState () {
     return {
       email: '',
@@ -19,9 +19,9 @@ const Login = React.createClass({
     });
   },
 
-  loginUser(e) {
+  createUser(e) {
     e.preventDefault();
-    this.props.actions.loginUser(this.state.email, this.state.password);
+    this.props.actions.createUser(this.state.email, this.state.password);
     this.setState({
       email: '',
       password: ''
@@ -31,7 +31,7 @@ const Login = React.createClass({
   render () {
     return (
       <div className="col-xs-12 col-md-4 col-md-offset-4">
-        <h3 className="text-center">Login</h3>
+        <h3 className="text-center">Sign Up</h3>
         {this.props.statusText ? <div className="alert alert-info">{this.props.statusText}</div> : ''}
         <form role="form">
           <div className="form-group">
@@ -51,11 +51,11 @@ const Login = React.createClass({
           <div className="row">
             <button type="submit"
               className="btn btn-lg btn-primary push-right"
-              onClick={this.loginUser}
+              onClick={this.createUser}
               >
-              Login
+              Sign Up
             </button>
-            <Link to="signup">Do not have an account? <strong>Sign up</strong></Link>
+            <Link to="login">Already have an account? <strong>Login</strong></Link>
           </div>
         </form>
       </div>
@@ -76,4 +76,4 @@ const mapDispatchToProps = (dispatch) => {
   };
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(Login);
+export default connect(mapStateToProps, mapDispatchToProps)(Signup);

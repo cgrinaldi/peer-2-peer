@@ -12,6 +12,7 @@ module.exports = {
   signup (req, res, next) {
     var email = req.body.email;
     var password = req.body.password;
+    console.log('request body is', req.body);
     User.findOne({email}, (err, data) => {
       // If email is taken...
       if (data) {
@@ -20,12 +21,15 @@ module.exports = {
       } else {
         // Otherwise, create new user
         var newUser = {email, password};
-        User.create(newUser, (err, data) => {
+        User.create(newUser, (err, user) => {
           if (err) {
             console.log('Failed to sign up:', email);
-            return next('Error');
+            return next('Error all the ways');
           } else {
-            res.send('User successfully created!');
+            var token = jwt.sign(user, config.secret, {
+              expiresIn: 1 * 60 * 60
+            });
+            res.json({token});
           }
         });
       }
@@ -46,7 +50,7 @@ module.exports = {
             var token = jwt.sign(user, config.secret, {
               expiresIn: 1 * 60 * 60
             });
-            res.json({success: true, token});
+            res.json({token});
           } else {
             res.sendStatus(403);
           }

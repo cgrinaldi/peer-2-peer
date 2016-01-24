@@ -4,9 +4,6 @@ import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
 import * as actionCreators from '../actions';
 
-import '../../styles/Navigation.scss';
-
-
 const Navigation = React.createClass({
   render () {
     return (
