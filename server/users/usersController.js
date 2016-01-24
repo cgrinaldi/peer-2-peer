@@ -4,8 +4,8 @@ var config = require('../config.js');
 
 module.exports = {
   getUsers (req, res) {
-    User.find({}, (err, data) => {
-      res.json(data);
+    User.getAllUsersSafe((users) => {
+      res.json(users);
     });
   },
 
@@ -23,13 +23,16 @@ module.exports = {
         var newUser = {email, password};
         User.create(newUser, (err, user) => {
           if (err) {
-            console.log('Failed to sign up:', email);
+            console.log('Failed to sign up:', email, err);
             return next('Error all the ways');
           } else {
             var token = jwt.sign(user, config.secret, {
               expiresIn: 1 * 60 * 60
             });
-            res.json({token});
+            // Send along the token and all the users currently in the system
+            User.getAllUsersSafe((users) => {
+              res.json({token, users});
+            });
           }
         });
       }
@@ -50,11 +53,29 @@ module.exports = {
             var token = jwt.sign(user, config.secret, {
               expiresIn: 1 * 60 * 60
             });
-            res.json({token});
+            // Send along the token and all the users currently in the system
+            User.getAllUsersSafe((users) => {
+              user.setOnlineStatus(true);
+              res.json({token, users});
+            });
           } else {
             res.sendStatus(403);
           }
         });
+      }
+    });
+  },
+
+  logout (req, res, next) {
+    console.log('aatempting to log user out', req.body.email);
+    const email = req.body.email;
+    User.findOne({email}, (err, user) => {
+      if (!user) {
+        res.sendStatus(404);
+      } else {
+        user.setOnlineStatus(false);
+        res.sendStatus(200); // NOTE: Need to send this so the success part of the promise
+                             // on the client is run.
       }
     });
   }

@@ -6,12 +6,12 @@ import configureStore from './store/configureStore.js';
 import {requireAuthentication} from './components/AuthenticatedComponent.jsx';
 
 import App from './containers/App.jsx';
+import Dashboard from './containers/Dashboard.jsx';
 import Login from './components/Login.jsx';
 import Signup from './components/Signup.jsx';
-import Dashboard from './components/Dashboard.jsx';
 import Transactions from './components/Transactions.jsx';
 
-const store = configureStore();
+export const store = configureStore(); // exporting store so we can dispatch events in realtime.js
 
 ReactDOM.render(
   <Provider store={store}>

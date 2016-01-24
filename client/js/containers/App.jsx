@@ -1,6 +1,6 @@
 import React from 'react';
 
-import Navigation from '../components/Navigation.jsx';
+import Navigation from '../containers/Navigation.jsx';
 import Login from '../components/Login.jsx';
 
 const App = React.createClass({

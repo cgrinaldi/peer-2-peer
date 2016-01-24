@@ -12,6 +12,12 @@ var UserSchema = new mongoose.Schema({
   password: {
     type: String,
     required: true
+  },
+
+  isOnline: {
+    type: Boolean,
+    required: true,
+    default: true
   }
 });
 
@@ -22,11 +28,35 @@ UserSchema.methods.comparePasswords = function(candidatePassword, callback) {
   });
 };
 
+UserSchema.methods.setOnlineStatus = function(isOnline) {
+  this.isOnline = isOnline;
+  this.save((err) => {
+    if (err) {
+      console.log('Error: could not set online status', err);
+    }
+  });
+}
+
+// Can call this to get a list of all of the users without
+// any sensitive info, like id or password
+UserSchema.statics.getAllUsersSafe = function(cb) {
+  this.find({}, (err, users) => {
+    var cleanedUsers = [];
+    users.forEach((user) => {
+      cleanedUsers.push({email: user.email, isOnline: user.isOnline});
+    });
+    cb(cleanedUsers);
+  });
+}
+
 // Prior to saving a user, hash the password
 UserSchema.pre('save', function(next) {
   bcrypt.hash(this.password, null, null, (err, hash) => {
     if (err) {
       console.log(err);
+    } else if (!this.isModified('password')) {
+      // Don't want to re-hash password if it hasn't been modified
+      return next();
     } else {
       this.password = hash;
       next();

@@ -2,7 +2,10 @@ import axios from 'axios';
 import {routeActions} from 'redux-simple-router';
 import {LOGIN_USER_REQUEST, LOGIN_USER_SUCCESS, LOGIN_USER_FAILURE,
         CREATE_USER_REQUEST, CREATE_USER_SUCCESS, CREATE_USER_FAILURE,
-        LOGOUT_USER} from '../constants';
+        LOGOUT_USER_REQUEST, LOGOUT_USER,
+        USERS_REQUEST_SUCCESS} from '../constants';
+
+import socket from '../helpers/realtime.js';
 
 export function loginUser (email, password) {
   return (dispatch) => {
@@ -12,10 +15,14 @@ export function loginUser (email, password) {
         var data = resp.data;
         console.log('data is', data);
         dispatch(loginUserSuccess(email, data.token));
+        dispatch(requestAllUsers());
         dispatch(routeActions.push('/dashboard'));
       })
       // If user is unsuccessful in signing in, issue failure action
-      .catch(() => dispatch(loginUserFailure()));
+      .catch((err) => {
+        console.log('err is', err);
+        dispatch(loginUserFailure())
+      });
   }
 };
 
@@ -25,11 +32,13 @@ export function loginUserRequest () {
   }
 };
 
-export function loginUserSuccess(email, token) {
+export function loginUserSuccess(email, token, users) {
   localStorage.setItem('token', token);
+  // Inform other users that new user is online
+  socket.emit('join', email);
   return {
     type: LOGIN_USER_SUCCESS,
-    payload: {email, token}
+    payload: {email, token, users}
   };
 };
 
@@ -48,13 +57,32 @@ export function createUser(email, password) {
     axios.post('/users/signup', {email, password})
       .then((resp) => {
         var data = resp.data;
+        console.log('data is', data);
         dispatch(createUserSuccess(email, data.token));
+        dispatch(requestAllUsers());
         dispatch(routeActions.push('/dashboard'));
       })
       .catch(() => dispatch(createUserFailure()));
   }
 }
 
+export function requestAllUsers() {
+  return (dispatch) => {
+    axios.get('/users')
+      .then((resp) => {
+        console.log('resp from requestAllUsers is', resp);
+        dispatch(requestAllUsersSuccess(resp.data));
+      });
+  }
+}
+
+export function requestAllUsersSuccess(users) {
+  console.log('new users are', users);
+  return {
+    type: USERS_REQUEST_SUCCESS,
+    payload: {users}
+  };
+};
 
 export function createUserRequest() {
   return {
@@ -62,11 +90,12 @@ export function createUserRequest() {
   }
 };
 
-export function createUserSuccess(email, token) {
+export function createUserSuccess(email, token, users) {
   localStorage.setItem('token', token);
+  socket.emit('join', email);
   return {
     type: CREATE_USER_SUCCESS,
-    payload: {email, token}
+    payload: {email, token, users}
   };
 };
 
@@ -79,9 +108,21 @@ export function createUserFailure() {
   };
 }
 
-export function logout () {
-  localStorage.removeItem('token');
-  return {
-    type: LOGOUT_USER
-  };
+export function logout (email) {
+  return (dispatch) => {
+    localStorage.removeItem('token');
+    axios.post('/users/logout', {email})
+    .then((resp) => {
+      dispatch(logoutUserRequest(email));
+      console.log('successfully logged out', resp);
+    })
+    .catch((err) => console.log('error on server', err));
+  }
 };
+
+export function logoutUserRequest (email) {
+  socket.emit('leave', email);
+  return {
+    type: LOGOUT_USER_REQUEST
+  };
+}
