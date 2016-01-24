@@ -42,6 +42,9 @@ UserSchema.pre('save', function(next) {
   bcrypt.hash(this.password, null, null, (err, hash) => {
     if (err) {
       console.log(err);
+    } else if (!this.isModified('password')) {
+      // Don't want to re-hash password if it hasn't been modified
+      return next();
     } else {
       this.password = hash;
       next();
