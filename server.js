@@ -2,6 +2,8 @@ var express = require('express');
 var path = require('path');
 var httpProxy = require('http-proxy');
 var app = express();
+var server = require('http').createServer(app);
+var io = require('socket.io')(server);
 var mongoose = require('mongoose');
 var config = require('./server/config.js');
 
@@ -40,7 +42,16 @@ proxy.on('error', function(e) {
   console.log('Could not connect to proxy, please try again...');
 });
 
+// SocketIO stuff
+io.on('connection', (client) => {
+  console.log('Client connected...');
+  client.on('join', (data) => {
+    console.log(data);
+    client.emit('messages', 'Why hello from server!');
+  });
+})
+
 // Start the server
-app.listen(port, function () {
+server.listen(port, function () {
   console.log(`Server is running at http://localhost:${port}`);
 });

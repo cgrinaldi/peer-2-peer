@@ -11,7 +11,14 @@ import Login from './components/Login.jsx';
 import Signup from './components/Signup.jsx';
 import Transactions from './components/Transactions.jsx';
 
+import configureSocket from './helpers/realtime.js';
+
 const store = configureStore();
+
+// Setting up real-time conection with server over websockets
+// TODO: Do not want the path hardcoded
+var socket = io.connect('http://localhost:3000');
+configureSocket(socket);
 
 ReactDOM.render(
   <Provider store={store}>
