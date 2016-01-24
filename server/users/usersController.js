@@ -59,5 +59,16 @@ module.exports = {
         });
       }
     });
+  },
+
+  logout (req, res, next) {
+    const email = req.body.email;
+    User.findOne({email}, (err, user) => {
+      if (!user) {
+        res.sendStatus(404);
+      } else {
+        user.setOnlineStatus(false);
+      }
+    });
   }
 }

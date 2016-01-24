@@ -5,6 +5,11 @@ import {connect} from 'react-redux';
 import * as actionCreators from '../actions';
 
 const Navigation = React.createClass({
+  logout () {
+    const email = this.props.email;
+    this.props.actions.logout(email);
+  },
+
   render () {
     return (
       <nav className="navbar navbar-inverse">
@@ -14,7 +19,7 @@ const Navigation = React.createClass({
               <li><Link activeClassName="active" to="dashboard">Dashboard</Link></li>
               <li><Link activeClassName="active" to="transactions">Transactions</Link></li>
               {this.props.isAuthenticated ?
-                <li><Link onClick={() => this.props.actions.logout()} to="login">Log Out</Link></li> :
+                <li><Link onClick={this.logout} to="login">Log Out</Link></li> :
                 <li><Link to="login">Login</Link></li>
               }
             </ul>
@@ -27,7 +32,8 @@ const Navigation = React.createClass({
 
 const mapStateToProps = (state) => {
   return {
-    isAuthenticated: state.auth.isAuthenticated
+    isAuthenticated: state.auth.isAuthenticated,
+    email: state.auth.email
   };
 };
 

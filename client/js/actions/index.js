@@ -2,7 +2,7 @@ import axios from 'axios';
 import {routeActions} from 'redux-simple-router';
 import {LOGIN_USER_REQUEST, LOGIN_USER_SUCCESS, LOGIN_USER_FAILURE,
         CREATE_USER_REQUEST, CREATE_USER_SUCCESS, CREATE_USER_FAILURE,
-        LOGOUT_USER} from '../constants';
+        LOGOUT_USER_REQUEST, LOGOUT_USER} from '../constants';
 
 export function loginUser (email, password) {
   return (dispatch) => {
@@ -79,9 +79,20 @@ export function createUserFailure() {
   };
 }
 
-export function logout () {
-  localStorage.removeItem('token');
-  return {
-    type: LOGOUT_USER
-  };
+export function logout (email) {
+  return (dispatch) => {
+    localStorage.removeItem('token');
+    axios.post('/users/logout', {email})
+    .then((resp) => {
+      dispatch(logoutUserRequest());
+      console.log('successfully logged out', resp);
+    })
+    .catch((err) => console.log('error on server', err));
+  }
 };
+
+export function logoutUserRequest () {
+  return {
+    type: LOGOUT_USER_REQUEST
+  };
+}

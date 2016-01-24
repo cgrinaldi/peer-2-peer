@@ -1,6 +1,6 @@
 import {LOGIN_USER_REQUEST, LOGIN_USER_FAILURE, LOGIN_USER_SUCCESS,
         CREATE_USER_REQUEST, CREATE_USER_SUCCESS, CREATE_USER_FAILURE,
-        LOGOUT_USER} from '../constants';
+        LOGOUT_USER_REQUEST, LOGOUT_USER} from '../constants';
 
 const initialState = {
   token: null,
@@ -59,7 +59,7 @@ export default function auth (state = initialState, action) {
       statusText: payload.statusText
     };
 
-  case LOGOUT_USER:
+  case LOGOUT_USER_REQUEST:
     return {
       isAuthenticating: false,
       isAuthenticated: false,
