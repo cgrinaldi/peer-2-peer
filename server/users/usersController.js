@@ -23,7 +23,7 @@ module.exports = {
         var newUser = {email, password};
         User.create(newUser, (err, user) => {
           if (err) {
-            console.log('Failed to sign up:', email);
+            console.log('Failed to sign up:', email, err);
             return next('Error all the ways');
           } else {
             var token = jwt.sign(user, config.secret, {
@@ -51,6 +51,8 @@ module.exports = {
               expiresIn: 1 * 60 * 60
             });
             res.json({token});
+            // Set user isOnline status to true
+            user.setOnlineStatus(true);
           } else {
             res.sendStatus(403);
           }

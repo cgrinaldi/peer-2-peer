@@ -12,6 +12,12 @@ var UserSchema = new mongoose.Schema({
   password: {
     type: String,
     required: true
+  },
+
+  isOnline: {
+    type: Boolean,
+    required: true,
+    default: true
   }
 });
 
@@ -21,6 +27,15 @@ UserSchema.methods.comparePasswords = function(candidatePassword, callback) {
     callback(isMatch);
   });
 };
+
+UserSchema.methods.setOnlineStatus = function(isOnline) {
+  this.isOnline = isOnline;
+  this.save((err) => {
+    if (err) {
+      console.log('Error: could not set online status', err);
+    }
+  });
+}
 
 // Prior to saving a user, hash the password
 UserSchema.pre('save', function(next) {
