@@ -4,8 +4,8 @@ var config = require('../config.js');
 
 module.exports = {
   getUsers (req, res) {
-    User.find({}, (err, data) => {
-      res.json(data);
+    User.getAllUsersSafe((users) => {
+      res.json(users);
     });
   },
 

@@ -24,8 +24,7 @@ export default function auth (state = initialState, action) {
       isAuthenticating: false,
       isAuthenticated: true,
       token: payload.token,
-      email: payload.email,
-      users: payload.users
+      email: payload.email
     };
 
   case LOGIN_USER_FAILURE:
@@ -48,8 +47,7 @@ export default function auth (state = initialState, action) {
       isAuthenticating: false,
       isAuthenticated: true,
       token: payload.token,
-      email: payload.email,
-      users: payload.users
+      email: payload.email
     };
 
   case CREATE_USER_FAILURE:

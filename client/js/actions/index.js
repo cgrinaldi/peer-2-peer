@@ -2,7 +2,8 @@ import axios from 'axios';
 import {routeActions} from 'redux-simple-router';
 import {LOGIN_USER_REQUEST, LOGIN_USER_SUCCESS, LOGIN_USER_FAILURE,
         CREATE_USER_REQUEST, CREATE_USER_SUCCESS, CREATE_USER_FAILURE,
-        LOGOUT_USER_REQUEST, LOGOUT_USER} from '../constants';
+        LOGOUT_USER_REQUEST, LOGOUT_USER,
+        USERS_REQUEST_SUCCESS} from '../constants';
 
 export function loginUser (email, password) {
   return (dispatch) => {
@@ -11,11 +12,15 @@ export function loginUser (email, password) {
       .then((resp) => {
         var data = resp.data;
         console.log('data is', data);
-        dispatch(loginUserSuccess(email, data.token, data.users));
+        dispatch(loginUserSuccess(email, data.token));
+        dispatch(requestAllUsers());
         dispatch(routeActions.push('/dashboard'));
       })
       // If user is unsuccessful in signing in, issue failure action
-      .catch(() => dispatch(loginUserFailure()));
+      .catch((err) => {
+        console.log('err is', err);
+        dispatch(loginUserFailure())
+      });
   }
 };
 
@@ -49,13 +54,30 @@ export function createUser(email, password) {
       .then((resp) => {
         var data = resp.data;
         console.log('data is', data);
-        dispatch(createUserSuccess(email, data.token, data.users));
+        dispatch(createUserSuccess(email, data.token));
+        dispatch(requestAllUsers());
         dispatch(routeActions.push('/dashboard'));
       })
       .catch(() => dispatch(createUserFailure()));
   }
 }
 
+export function requestAllUsers() {
+  return (dispatch) => {
+    axios.get('/users')
+      .then((resp) => {
+        console.log('resp from requestAllUsers is', resp);
+        dispatch(requestAllUsersSuccess(resp.data));
+      });
+  }
+}
+
+export function requestAllUsersSuccess(users) {
+  return {
+    type: USERS_REQUEST_SUCCESS,
+    payload: {users}
+  };
+};
 
 export function createUserRequest() {
   return {
