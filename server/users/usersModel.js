@@ -18,6 +18,12 @@ var UserSchema = new mongoose.Schema({
     type: Boolean,
     required: true,
     default: true
+  },
+
+  balance: {
+    type: Number,
+    required: true,
+    default: 50
   }
 });
 
@@ -43,7 +49,12 @@ UserSchema.statics.getAllUsersSafe = function(cb) {
   this.find({}, (err, users) => {
     var cleanedUsers = [];
     users.forEach((user) => {
-      cleanedUsers.push({email: user.email, isOnline: user.isOnline});
+      const cleanedUser = {
+        email: user.email,
+        isOnline: user.isOnline,
+        balance: user.balance
+      };
+      cleanedUsers.push(cleanedUser);
     });
     cb(cleanedUsers);
   });

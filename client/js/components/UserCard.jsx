@@ -7,7 +7,7 @@ import FlatButton from 'material-ui/lib/flat-button';
 
 export default React.createClass({
   render () {
-    const {email, isOnline} = this.props.user;
+    const {email, isOnline, balance} = this.props.user;
     const userStatus = isOnline ? "Online" : "Offline";
     const cardStyle = {
       width: '250px',
@@ -19,7 +19,7 @@ export default React.createClass({
       <Card style={cardStyle}>
         <CardTitle
           title={email}
-          subtitle={userStatus} />
+          subtitle={userStatus + ' - Balance: $' + balance }  />
         <CardActions>
           <FlatButton label="Transfer" />
           <FlatButton label="Request" />
