@@ -29,7 +29,10 @@ module.exports = {
             var token = jwt.sign(user, config.secret, {
               expiresIn: 1 * 60 * 60
             });
-            res.json({token});
+            // Send along the token and all the users currently in the system
+            User.getAllUsersSafe((users) => {
+              res.json({token, users});
+            });
           }
         });
       }
@@ -50,9 +53,11 @@ module.exports = {
             var token = jwt.sign(user, config.secret, {
               expiresIn: 1 * 60 * 60
             });
-            res.json({token});
-            // Set user isOnline status to true
-            user.setOnlineStatus(true);
+            // Send along the token and all the users currently in the system
+            User.getAllUsersSafe((users) => {
+              user.setOnlineStatus(true);
+              res.json({token, users});
+            });
           } else {
             res.sendStatus(403);
           }

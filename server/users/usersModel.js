@@ -37,6 +37,18 @@ UserSchema.methods.setOnlineStatus = function(isOnline) {
   });
 }
 
+// Can call this to get a list of all of the users without
+// any sensitive info, like id or password
+UserSchema.statics.getAllUsersSafe = function(cb) {
+  this.find({}, (err, users) => {
+    var cleanedUsers = [];
+    users.forEach((user) => {
+      cleanedUsers.push({email: user.email, isOnline: user.isOnline});
+    });
+    cb(cleanedUsers);
+  });
+}
+
 // Prior to saving a user, hash the password
 UserSchema.pre('save', function(next) {
   bcrypt.hash(this.password, null, null, (err, hash) => {

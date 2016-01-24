@@ -11,7 +11,7 @@ export function loginUser (email, password) {
       .then((resp) => {
         var data = resp.data;
         console.log('data is', data);
-        dispatch(loginUserSuccess(email, data.token));
+        dispatch(loginUserSuccess(email, data.token, data.users));
         dispatch(routeActions.push('/dashboard'));
       })
       // If user is unsuccessful in signing in, issue failure action
@@ -25,11 +25,11 @@ export function loginUserRequest () {
   }
 };
 
-export function loginUserSuccess(email, token) {
+export function loginUserSuccess(email, token, users) {
   localStorage.setItem('token', token);
   return {
     type: LOGIN_USER_SUCCESS,
-    payload: {email, token}
+    payload: {email, token, users}
   };
 };
 
@@ -48,7 +48,8 @@ export function createUser(email, password) {
     axios.post('/users/signup', {email, password})
       .then((resp) => {
         var data = resp.data;
-        dispatch(createUserSuccess(email, data.token));
+        console.log('data is', data);
+        dispatch(createUserSuccess(email, data.token, data.users));
         dispatch(routeActions.push('/dashboard'));
       })
       .catch(() => dispatch(createUserFailure()));
@@ -62,11 +63,11 @@ export function createUserRequest() {
   }
 };
 
-export function createUserSuccess(email, token) {
+export function createUserSuccess(email, token, users) {
   localStorage.setItem('token', token);
   return {
     type: CREATE_USER_SUCCESS,
-    payload: {email, token}
+    payload: {email, token, users}
   };
 };
 
