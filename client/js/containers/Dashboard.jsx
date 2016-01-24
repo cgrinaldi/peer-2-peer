@@ -8,14 +8,17 @@ import Users from '../components/Users.jsx';
 const Dashboard = React.createClass({
   render () {
     return (
-      <Users users={this.props.users} />
+      <Users
+        users={this.props.users}
+        email={this.props.email} />
     );
   }
 });
 
 const mapStateToProps = (state) => {
   return {
-    users: state.users
+    users: state.users,
+    email: state.auth.email
   };
 };
 
