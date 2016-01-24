@@ -1,6 +1,7 @@
 import axios from 'axios';
 import {routeActions} from 'redux-simple-router';
-import {LOGIN_USER_REQUEST, LOGIN_USER_SUCCESS, LOGIN_USER_FAILURE} from '../constants';
+import {LOGIN_USER_REQUEST, LOGIN_USER_SUCCESS, LOGIN_USER_FAILURE,
+        LOGOUT_USER} from '../constants';
 
 export function loginUser (email, password) {
   return (dispatch) => {
@@ -29,7 +30,7 @@ export function loginUserSuccess(email, token) {
     type: LOGIN_USER_SUCCESS,
     payload: {email, token}
   };
-}
+};
 
 export function loginUserFailure() {
   return {
@@ -38,4 +39,11 @@ export function loginUserFailure() {
       statusText: 'Invalid username or password'
     }
   };
-}
+};
+
+export function logout () {
+  localStorage.removeItem('token');
+  return {
+    type: LOGOUT_USER
+  };
+};

@@ -1,7 +1,13 @@
 import React from 'react';
 import {Link} from 'react-router';
+import {bindActionCreators} from 'redux';
+import {connect} from 'react-redux';
+import * as actionCreators from '../actions';
 
-export default React.createClass({
+import '../../styles/Navigation.scss';
+
+
+const Navigation = React.createClass({
   render () {
     return (
       <nav className="navbar navbar-inverse">
@@ -10,7 +16,10 @@ export default React.createClass({
             <ul className="nav navbar-nav navbar-right">
               <li><Link activeClassName="active" to="dashboard">Dashboard</Link></li>
               <li><Link activeClassName="active" to="transactions">Transactions</Link></li>
-              <li><a>Log Out</a></li>
+              {this.props.isAuthenticated ?
+                <li><Link onClick={() => this.props.actions.logout()} to="login">Log Out</Link></li> :
+                <li><Link to="login">Login</Link></li>
+              }
             </ul>
           </div>
         </div>
@@ -18,3 +27,17 @@ export default React.createClass({
     );
   }
 });
+
+const mapStateToProps = (state) => {
+  return {
+    isAuthenticated: state.auth.isAuthenticated
+  };
+};
+
+const mapDispatchToProps = (dispatch) => {
+  return {
+    actions: bindActionCreators(actionCreators, dispatch)
+  };
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(Navigation);

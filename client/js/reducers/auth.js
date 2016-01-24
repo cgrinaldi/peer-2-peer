@@ -1,4 +1,5 @@
-import {LOGIN_USER_REQUEST, LOGIN_USER_FAILURE, LOGIN_USER_SUCCESS} from '../constants';
+import {LOGIN_USER_REQUEST, LOGIN_USER_FAILURE, LOGIN_USER_SUCCESS,
+        LOGOUT_USER} from '../constants';
 
 const initialState = {
   token: null,
@@ -32,6 +33,14 @@ export default function auth (state = initialState, action) {
       token: null,
       email: null,
       statusText: payload.statusText
+    };
+
+  case LOGOUT_USER:
+    return {
+      isAuthenticating: false,
+      isAuthenticated: false,
+      token: null,
+      email: null
     };
 
   default:
