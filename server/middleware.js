@@ -12,6 +12,7 @@ module.exports = function(app) {
   app.use(morgan('dev'));
   // Parse body of request
   app.use(bodyParser.urlencoded({extended:false}));
+  app.use(bodyParser.json());
 
   // Create Express routers
   var usersRouter = express.Router();
