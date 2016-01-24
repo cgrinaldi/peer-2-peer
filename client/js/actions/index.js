@@ -5,6 +5,8 @@ import {LOGIN_USER_REQUEST, LOGIN_USER_SUCCESS, LOGIN_USER_FAILURE,
         LOGOUT_USER_REQUEST, LOGOUT_USER,
         USERS_REQUEST_SUCCESS} from '../constants';
 
+import socket from '../helpers/realtime.js';
+
 export function loginUser (email, password) {
   return (dispatch) => {
     dispatch(loginUserRequest());
@@ -32,6 +34,8 @@ export function loginUserRequest () {
 
 export function loginUserSuccess(email, token, users) {
   localStorage.setItem('token', token);
+  // Inform other users that new user is online
+  socket.emit('join', email);
   return {
     type: LOGIN_USER_SUCCESS,
     payload: {email, token, users}
@@ -73,6 +77,7 @@ export function requestAllUsers() {
 }
 
 export function requestAllUsersSuccess(users) {
+  console.log('new users are', users);
   return {
     type: USERS_REQUEST_SUCCESS,
     payload: {users}
@@ -87,6 +92,7 @@ export function createUserRequest() {
 
 export function createUserSuccess(email, token, users) {
   localStorage.setItem('token', token);
+  socket.emit('join', email);
   return {
     type: CREATE_USER_SUCCESS,
     payload: {email, token, users}
@@ -107,14 +113,15 @@ export function logout (email) {
     localStorage.removeItem('token');
     axios.post('/users/logout', {email})
     .then((resp) => {
-      dispatch(logoutUserRequest());
+      dispatch(logoutUserRequest(email));
       console.log('successfully logged out', resp);
     })
     .catch((err) => console.log('error on server', err));
   }
 };
 
-export function logoutUserRequest () {
+export function logoutUserRequest (email) {
+  socket.emit('leave', email);
   return {
     type: LOGOUT_USER_REQUEST
   };

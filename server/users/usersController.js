@@ -67,12 +67,15 @@ module.exports = {
   },
 
   logout (req, res, next) {
+    console.log('aatempting to log user out', req.body.email);
     const email = req.body.email;
     User.findOne({email}, (err, user) => {
       if (!user) {
         res.sendStatus(404);
       } else {
         user.setOnlineStatus(false);
+        res.sendStatus(200); // NOTE: Need to send this so the success part of the promise
+                             // on the client is run.
       }
     });
   }

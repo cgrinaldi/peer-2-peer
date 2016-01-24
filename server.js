@@ -45,9 +45,17 @@ proxy.on('error', function(e) {
 // SocketIO stuff
 io.on('connection', (client) => {
   console.log('Client connected...');
-  client.on('join', (data) => {
-    console.log(data);
-    client.emit('messages', 'Why hello from server!');
+
+  // Inform all clients when new user logs in
+  client.on('join', (email) => {
+    console.log('user with email', email, 'joined');
+    client.broadcast.emit('newUser', email);
+  });
+
+  // Inform all clients when a user logs out
+  client.on('leave', (email) => {
+    console.log('user with email', email, 'just left');
+    client.broadcast.emit('userLeft', email);
   });
 })
 
