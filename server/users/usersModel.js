@@ -18,6 +18,12 @@ var UserSchema = new mongoose.Schema({
     type: Boolean,
     required: true,
     default: true
+  },
+
+  balance: {
+    type: Number,
+    required: true,
+    default: 50
   }
 });
 
@@ -43,9 +49,42 @@ UserSchema.statics.getAllUsersSafe = function(cb) {
   this.find({}, (err, users) => {
     var cleanedUsers = [];
     users.forEach((user) => {
-      cleanedUsers.push({email: user.email, isOnline: user.isOnline});
+      const cleanedUser = {
+        email: user.email,
+        isOnline: user.isOnline,
+        balance: user.balance
+      };
+      cleanedUsers.push(cleanedUser);
     });
     cb(cleanedUsers);
+  });
+}
+
+// TODO: Research a way to do the find and update in one go
+UserSchema.statics.transferMoney = function(from, to, amount, cb) {
+  const userModel = this;
+  userModel.findOne({email: from}, (err, fromUser) => {
+    if (fromUser.balance < amount) {
+      console.log('balance not large enough!');
+      cb(true)
+      return;
+    }
+
+    userModel.findOne({email: to}, (err, toUser) => {
+      const newToBalance = toUser.balance + amount;
+      const newFromBalance = fromUser.balance - amount;
+      userModel.update({email: to}, {balance: newToBalance}, (err) => {
+        if (err) {
+          return console.log(err);
+        }
+        userModel.update({email: from}, {balance: newFromBalance}, (err) => {
+          if (err) {
+            return console.log(err);
+          }
+          cb();
+        });
+      });
+    });
   });
 }
 

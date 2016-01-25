@@ -19,4 +19,9 @@ socket.on('userLeft', (email) => {
   console.log('user with email', email, 'just logged off');
 });
 
+socket.on('receivedMoney', (transaction) => {
+  store.dispatch(requestAllUsers());
+  console.log('the transaction is', transaction);
+});
+
 export default socket;

@@ -16,10 +16,13 @@ module.exports = function(app) {
 
   // Create Express routers
   var usersRouter = express.Router();
+  var transactionsRouter = express.Router();
 
   // Use users router for requests related to adding and getting users
   app.use('/users', usersRouter);
+  app.use('/transactions', transactionsRouter);
 
   // Setup all of the routers
   require('./users/userRoutes.js')(usersRouter);
+  require('./transactions/transactionsRoutes.js')(transactionsRouter);
 };

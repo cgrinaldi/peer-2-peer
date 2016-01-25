@@ -3,6 +3,7 @@ import {routeActions} from 'redux-simple-router';
 import {LOGIN_USER_REQUEST, LOGIN_USER_SUCCESS, LOGIN_USER_FAILURE,
         CREATE_USER_REQUEST, CREATE_USER_SUCCESS, CREATE_USER_FAILURE,
         LOGOUT_USER_REQUEST, LOGOUT_USER,
+        TRANSACTIONS_REQUEST_SUCCESS,
         USERS_REQUEST_SUCCESS} from '../constants';
 
 import socket from '../helpers/realtime.js';
@@ -14,8 +15,9 @@ export function loginUser (email, password) {
       .then((resp) => {
         var data = resp.data;
         console.log('data is', data);
-        dispatch(loginUserSuccess(email, data.token));
+        dispatch(loginUserSuccess(email, data.token, data.users));
         dispatch(requestAllUsers());
+        dispatch(getTransactions());
         dispatch(routeActions.push('/dashboard'));
       })
       // If user is unsuccessful in signing in, issue failure action
@@ -60,6 +62,7 @@ export function createUser(email, password) {
         console.log('data is', data);
         dispatch(createUserSuccess(email, data.token));
         dispatch(requestAllUsers());
+        dispatch(getTransactions());
         dispatch(routeActions.push('/dashboard'));
       })
       .catch(() => dispatch(createUserFailure()));
@@ -126,3 +129,33 @@ export function logoutUserRequest (email) {
     type: LOGOUT_USER_REQUEST
   };
 }
+
+// TODO: This should be in its own file
+// ACTIONS RELATE TO TRANSACTIONS
+export function getTransactions () {
+  return (dispatch) => {
+    axios.get('/transactions')
+      .then((resp) => {
+        console.log('resp from getTransactions is', resp);
+        dispatch(getTransactionsSuccess(resp.data));
+      });
+  }
+}
+
+export function getTransactionsSuccess (transactions) {
+  return {
+    type: TRANSACTIONS_REQUEST_SUCCESS,
+    payload: {transactions}
+  };
+};
+
+// TOOD: For some reason, this is casuing many requests to go off...Has
+// something to do with being in the UserCard loop
+// export function sendMoney (from, to, amount) {
+//   return (dispatch) => {
+//     axios.post('/transactions/send', {from, to, amount})
+//       .then((resp) => {
+//         console.log('response HERE is', resp);
+//       });
+//   }
+// }
