@@ -67,7 +67,7 @@ module.exports = {
   },
 
   logout (req, res, next) {
-    console.log('aatempting to log user out', req.body.email);
+    console.log('attempting to log user out', req.body.email);
     const email = req.body.email;
     User.findOne({email}, (err, user) => {
       if (!user) {

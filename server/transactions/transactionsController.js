@@ -1,7 +1,16 @@
 var Transaction = require('./transactionsModel.js');
 
 module.exports = {
-  sendMoney (req, res, next) {
+  getTransactions (req, res) {
+    Transaction.find({}, (err, transactions) => {
+      if (err) {
+        return console.log(err);
+      }
+      res.json(transactions);
+    });
+  },
+
+  sendMoney (req, res) {
     const newTransaction = {
       from: req.body.from,
       to: req.body.to,
