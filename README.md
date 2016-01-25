@@ -4,6 +4,7 @@ An app that allows users to send fake money to each other in real-time. Made usi
 ## Instructions
 Clone onto your local machine followed by:
 
+0. `mongod` to start up the local instance of MongoDB
 1. `npm install`
 2. Rename `server/config.sample.js` to `server/config.js` and input correct information (mainly the secret)
 3. `node server.js` 
