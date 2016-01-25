@@ -7,9 +7,9 @@ import {requireAuthentication} from './components/AuthenticatedComponent.jsx';
 
 import App from './containers/App.jsx';
 import Dashboard from './containers/Dashboard.jsx';
+import Transactions from './containers/Transactions.jsx';
 import Login from './components/Login.jsx';
 import Signup from './components/Signup.jsx';
-import Transactions from './components/Transactions.jsx';
 
 export const store = configureStore(); // exporting store so we can dispatch events in realtime.js
 
