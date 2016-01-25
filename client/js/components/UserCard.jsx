@@ -76,7 +76,7 @@ export default React.createClass({
           title={email}
           subtitle={userStatus + ' - Balance: $' + balance } />
         <CardActions>
-          <FlatButton label="Transfer" onClick={this.show.bind(this, 'pop')} />
+          <FlatButton label="Send" onClick={this.show.bind(this, 'pop')} />
           <FlatButton label="Request" />
         </CardActions>
 
