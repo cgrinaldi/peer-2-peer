@@ -5,8 +5,9 @@ An app that allows users to send fake money to each other in real-time. Made usi
 Clone onto your local machine followed by:
 
 1. `npm install`
-2. `node server.js` 
-3. Navigate to `localhost:3000`.
+2. Rename `server/config.sample.js` to `server/config.js` and input correct information (mainly the secret)
+3. `node server.js` 
+4. Navigate to `localhost:3000`.
 
 ## Creating Users
 When you first run the app, there will be no users in the system. Simply create a 
