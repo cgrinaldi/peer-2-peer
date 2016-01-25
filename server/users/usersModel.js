@@ -60,6 +60,34 @@ UserSchema.statics.getAllUsersSafe = function(cb) {
   });
 }
 
+// TODO: Research a way to do the find and update in one go
+UserSchema.statics.transferMoney = function(from, to, amount, cb) {
+  const userModel = this;
+  userModel.findOne({email: from}, (err, fromUser) => {
+    if (fromUser.balance < amount) {
+      console.log('balance not large enough!');
+      cb(true)
+      return;
+    }
+
+    userModel.findOne({email: to}, (err, toUser) => {
+      const newToBalance = toUser.balance + amount;
+      const newFromBalance = fromUser.balance - amount;
+      userModel.update({email: to}, {balance: newToBalance}, (err) => {
+        if (err) {
+          return console.log(err);
+        }
+        userModel.update({email: from}, {balance: newFromBalance}, (err) => {
+          if (err) {
+            return console.log(err);
+          }
+          cb();
+        });
+      });
+    });
+  });
+}
+
 // Prior to saving a user, hash the password
 UserSchema.pre('save', function(next) {
   bcrypt.hash(this.password, null, null, (err, hash) => {

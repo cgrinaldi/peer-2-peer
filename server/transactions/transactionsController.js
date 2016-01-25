@@ -1,4 +1,5 @@
 var Transaction = require('./transactionsModel.js');
+var Model = require('../users/usersModel.js');
 
 module.exports = {
   getTransactions (req, res) {
@@ -10,17 +11,29 @@ module.exports = {
     });
   },
 
-  sendMoney (req, res) {
-    const newTransaction = {
-      from: req.body.from,
-      to: req.body.to,
-      amount: req.body.amount
-    };
-    Transaction.create(newTransaction, (err, transaction) => {
+  sendMoney (req, res, next) {
+    const from = req.body.from;
+    const to = req.body.to;
+    const amount = +req.body.amount;
+    const newTransaction = {from, to, amount};
+
+    Model.transferMoney(from, to, amount, (err) => {
       if (err) {
-        return console.log(err);
+        console.log('err is', err);
+        // res.status(403);
       }
-      res.json(transaction);
+      // If here, money has been successfully transfered between users
+      Transaction.create(newTransaction, (e, transaction) => {
+        // TODO: If error, need to handle the discrepancy
+        if (e || err) {
+          console.log(e);
+          res.status(403);
+          res.send();
+        } else {
+          console.log('HERE???');
+          res.sendStatus(200);
+        }
+      })
     });
   }
 }
