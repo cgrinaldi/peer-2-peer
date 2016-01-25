@@ -65,7 +65,7 @@ export default React.createClass({
     const {email, isOnline, balance} = this.props.user;
     const userStatus = isOnline ? "Online" : "Offline";
     const cardStyle = {
-      width: '250px',
+      width: '300px',
       marginRight: '10px',
       marginBottom: '10px',
       float: 'left'

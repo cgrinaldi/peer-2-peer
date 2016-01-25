@@ -4,6 +4,7 @@ var httpProxy = require('http-proxy');
 var app = express();
 var server = require('http').createServer(app);
 var io = require('socket.io')(server);
+require('./server/helpers/realtime.js')(io, app); // setup io and track connectedClients
 var mongoose = require('mongoose');
 var config = require('./server/config.js');
 
@@ -41,23 +42,6 @@ if (!isProduction) {
 proxy.on('error', function(e) {
   console.log('Could not connect to proxy, please try again...');
 });
-
-// SocketIO stuff
-io.on('connection', (client) => {
-  console.log('Client connected...');
-
-  // Inform all clients when new user logs in
-  client.on('join', (email) => {
-    console.log('user with email', email, 'joined');
-    client.broadcast.emit('newUser', email);
-  });
-
-  // Inform all clients when a user logs out
-  client.on('leave', (email) => {
-    console.log('user with email', email, 'just left');
-    client.broadcast.emit('userLeft', email);
-  });
-})
 
 // Start the server
 server.listen(port, function () {

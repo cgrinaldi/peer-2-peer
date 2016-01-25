@@ -1,5 +1,5 @@
 var Transaction = require('./transactionsModel.js');
-var Model = require('../users/usersModel.js');
+var User = require('../users/usersModel.js');
 
 module.exports = {
   getTransactions (req, res) {
@@ -17,7 +17,7 @@ module.exports = {
     const amount = +req.body.amount;
     const newTransaction = {from, to, amount};
 
-    Model.transferMoney(from, to, amount, (err) => {
+    User.transferMoney(from, to, amount, (err) => {
       if (err) {
         console.log('err is', err);
         // res.status(403);
@@ -30,7 +30,12 @@ module.exports = {
           res.status(403);
           res.send();
         } else {
-          console.log('HERE???');
+          var connectedClients = req.app.settings.connectedClients;
+          if (to in connectedClients) {
+            connectedClients[to].emit('receivedMoney', transaction);
+          } else {
+            // Write notification to user's pending messages
+          }
           res.sendStatus(200);
         }
       })
